@@ -1,0 +1,4 @@
+interface:
+  display_name: "Demand Essence Loop"
+  short_description: "Find real needs and evolve systems safely"
+  default_prompt: "Use $demand-essence-loop to analyze this change request and recommend the smallest safe solution."
