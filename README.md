@@ -1,113 +1,136 @@
-# Demand Essence Loop
+# Demand Essence Loop (需求透视与闭环演进)
 
-一个帮助 AI 编程代理识别真实需求、避免 XY Problem，并以最小安全改动推动系统演进的通用 skill。
+> **做事情不是不做，而是如何把事情做好；看透事物本质，不被表象与单角色局限遮蔽；  
+> 不搞万事通，不做过度设计；在实现上克制收敛、小步迭代，在不可逆的底层结构上预留演进留白，严防破坏性断裂。**
 
-它适合处理带有明显“方案先行”倾向的需求、测试反馈、跨角色冲突，以及会影响状态机、数据、权限、接口兼容性或外部副作用的变更。对于已经定义清楚、没有实质设计取舍的简单修改，它不会强行引入额外流程。
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Skill Standard](https://img.shields.io/badge/Skill-Agentic%20Standard-success.svg)](SKILL.md)
 
-## 它解决什么问题
+`Demand Essence Loop` 是一套**从真实一线高压业务战火中淬炼沉淀而成**的 AI 编程代理工程规范。它旨在帮助开发代理识别真实需求本质、化解 XY 问题与角色偏狭、评估端到端系统影响面，以极简克制的代码交付当期最优解，并在不可逆的底层结构（Schema、状态枚举、API契约）中预留安全演进空间。
 
-需求方经常描述一个解决方案，而不是问题本身。例如“增加一个全局强制按钮”“把所有数据导出来”“再加一个特殊状态”。直接照做可能修复表象，却制造重复能力、破坏领域模型或留下难以演进的契约。
+---
 
-本 skill 引导代理完成一个风险适配的闭环：
+## 💡 为什么需要本 Skill？
 
-1. 分离观察、目标、约束和提议方案；
-2. 从代码、契约、Schema、测试或运行行为中确认当前系统事实；
-3. 识别真正缺失的是能力，还是可发现性、流程摩擦或实现缺陷；
-4. 评估相关的用户体验、状态、数据、权限、并发和外部副作用；
-5. 选择解决完整用户旅程的最小安全方案；
-6. 只在有可信演进路径时保留兼容空间，并用匹配风险的证据完成验证。
+在真实软件开发与测试运行中，需求与反馈往往呈现出**“高频、碎片化、方案先行、单角色偏狭”**的特征。此时工程师与 AI 极易滑向两个极端：
 
-## 设计原则
+1. **机械照单全收**：提需求者说“加个按钮/加个状态”，就盲目直接加，导致系统充斥平行功能、破坏领域边界、留下难以维护的意大利面条代码。
+2. **消极对抗或教条式极简**：以“YAGNI / 架构不支持”为由生硬拒绝；或者盲目硬编码布尔值，三个月后业务微调时，不得不面临全量洗库、停机迁移和接口断裂的灾难。
 
-- 不把用户提出的第一个实现方案等同于需求本身；
-- 不以“需求分析”为由拖慢清晰、低风险的简单工作；
-- 不预设技术栈、业务领域、仓库结构或验证命令；
-- 不把 `metadata`、布尔开关、兼容层或规则引擎当作默认的“未来兼容”；
-- 不强制每次输出固定的长报告；
-- 不在缺少实现或风险相关验证时宣称完成。
+**Demand Essence Loop 提供了第三条道路：**  
+深入理解一线物理现实与角色利益，在实现上做减法（拒绝过度设计），在不可逆的结构层做留白（防御性演进）。
 
-## 目录结构
+---
+
+## 🔄 核心工作流：五步闭环法 (The 5-Step Essence Loop)
+
+```mermaid
+flowchart TD
+    Req["接收用户/测试反馈<br/>(方案先行 / XY问题 / 角色偏狭)"] --> S1["1. 本质透视 (Essence Probing)<br/>物理现实还原、5-Why、多角色冲突穿透"]
+    S1 --> S2["2. 现状盘点 (Capability Check)<br/>盘点已有能力，区分是能力缺失还是操作摩擦"]
+    S2 --> S3["3. 影响全景 (Blast Radius)<br/>穿透现场工效、状态机正逆向、数据一致性与审计"]
+    S3 --> S4["4. 当期最优解 (Pragmatic MVP)<br/>克制收敛，反过度设计，一口不吃成胖子"]
+    S4 --> S5["5. 演进留白 (Evolution Reservation)<br/>在不可逆成本最高的底层留扩展槽，防未来破坏性断裂"]
+    S5 --> Out["闭环对齐沟通<br/>(高情商引导共识，专业透明交付)"]
+```
+
+### 1. 本质透视 (Essence Probing)
+- **分离四要素**：严格区分事实、期望目标、现实约束与提议手段。
+- **物理现场还原**：不假设用户坐在空调办公室。代入一线真实工况（手部油污/水渍、移动设备屏幕与划痕、网络波动、周围环境噪音、排队焦虑感）。
+- **利益张力穿透**：一线操作端（求快）、财务审计端（求合规凭证）、调度管理端（求稳定）、终端用户端（求灵活）的多角色博弈。
+
+### 2. 现状盘点 (Capability Check)
+- 从代码、Schema、接口和运行行为中找寻事实真理（Source of Truth）。
+- 优先通过既有能力组合、信息层级优化或防呆机制解决问题，避免重复开辟功能。
+
+### 3. 影响全景 (Blast Radius)
+- 穿透五个层级评估连带代价：移动端现场工效、权限与会话、状态机正逆向完备性、并发与排他锁、财务资金对账与审计。
+
+### 4. 当期最优解 (Pragmatic MVP)
+- 反贪大求全，拒绝为刚出现的一个个别诉求构建庞大的通用规则引擎或万能配置系统。
+- 明确划分“本次做哪几步、坚决不做哪些延伸”。
+
+### 5. 演进留白 (Evolution Reservation)
+- **底层防破坏性变更四大铁律**：
+  - **状态机枚举留白**：坚决不用单布尔值（如 `is_special`）封死生命周期，即使两个状态也用枚举；
+  - **Schema 扩展槽（Metadata 留白）**：核心表预留 `metadata JSON NULL`，用于过渡轻量半结构化属性，未来升级一等公民列时平滑无痛；
+  - **API 契约 Envelope 封装**：响应包装对象、入参单一对象，新增可选参数永不破坏老版本契约；
+  - **领域概念与权限解耦**：杜绝魔法值与硬编码绑定。
+
+---
+
+## 🚦 风险分级与适用边界
+
+本 Skill 具备自适应弹性，拒绝形式主义：
+
+| 风险层级 | 典型场景 | 执行动作 |
+| :--- | :--- | :--- |
+| 🟢 **轻量放行 (Low Risk)** | 纯文案调整、格式排版、局部重命名、无副作用的局部修复 | 快速落地并验证，**不强推繁琐分析与长篇报告** |
+| 🟡 **中度对齐 (Medium Risk)** | 局部交互微调、单模块逻辑优化 | 采用轻量决策备忘对齐关键边界 |
+| 🔴 **全面闭环 (High Risk)** | 用户方案先行但目标模糊、多角色冲突、涉及 Schema/状态机/资金/权限变更 | **严格执行五步闭环法**，输出完整闭环对齐报告 |
+
+---
+
+## 📂 仓库结构
 
 ```text
 demand-essence-loop/
-├── SKILL.md
+├── SKILL.md                                 # 核心入口：规则、工作流、分级标准与自检清单
+├── README.md                                # 项目主文档（中英双语）
+├── LICENSE                                  # MIT 开源协议
 ├── agents/
-│   └── openai.yaml
+│   └── openai.yaml                          # Agent 接口元数据配置
 └── references/
-    ├── requirements-discovery.md
-    ├── impact-and-evolution.md
-    └── response-patterns.md
+    ├── essence-probing-guide.md             # 需求下潜、物理现场还原与 XY 问题诊断指南
+    ├── evolution-without-overengineering.md # 防过度设计与前瞻演进留白实战手册（四大铁律）
+    └── closed-loop-communication.md         # 闭环沟通规范、报告模板与高情商语言禁忌表
 ```
 
-- `SKILL.md`：触发边界、核心工作流与决策规则。
-- `requirements-discovery.md`：需求下潜、证据优先和 XY Problem 诊断。
-- `impact-and-evolution.md`：风险分级、影响面、可逆性与演进判断。
-- `response-patterns.md`：按决策复杂度选择的沟通结构。
+---
 
-## 安装
+## 🚀 快速上手与安装
 
-### Codex
-
-将仓库复制或软链接到 Codex skills 目录：
-
+### 1. Codex
+将本仓库克隆或软链接至 Codex skills 目录：
 ```bash
 git clone https://github.com/huxy2023/demand-essence-loop.git
 ln -s "$(pwd)/demand-essence-loop" "$HOME/.codex/skills/demand-essence-loop"
 ```
 
-重启或刷新 Codex 后，可直接使用：
-
-```text
-Use $demand-essence-loop to analyze this change request and recommend the smallest safe solution.
-```
-
-### Gemini CLI
-
-将仓库复制或软链接到 Gemini skills 目录：
-
+### 2. Gemini CLI / Antigravity
+将本仓库软链接至 Gemini / Antigravity 配置目录：
 ```bash
 mkdir -p "$HOME/.gemini/config/skills"
 ln -s "$(pwd)/demand-essence-loop" "$HOME/.gemini/config/skills/demand-essence-loop"
 ```
 
-### 其他支持 `SKILL.md` 的代理
-
-把整个目录放入该代理的 skills 搜索路径。不同产品的发现机制可能不同，请以其本地配置为准。
-
-## 使用示例
-
-```text
-使用 $demand-essence-loop 分析“给审批页面增加一个绕过审核的快捷按钮”这个需求。
-请先确认真实目标与现有恢复路径，再给出最小安全方案、影响面和验证范围。
-```
-
-```text
-Use $demand-essence-loop to review this proposed schema change. Separate the current requirement from speculative future needs and identify the least reversible decisions.
-```
-
-## 触发边界
-
-适合：
-
-- 用户直接给出实现方案，但真实问题尚未确认；
-- 多个角色或系统边界存在利益与风险冲突；
-- 变更涉及共享状态、公共接口、持久化数据、权限、并发或外部副作用；
-- 团队需要在“只修表象”和“过度设计”之间做出可解释的决策。
-
-不适合：
-
-- 文案、格式、命名等没有实质设计取舍的明确修改；
-- 已有清晰验收标准且只需按既有模式实现的低风险任务；
-- 与软件或产品变更无关的一般性需求。
-
-## 许可
-
-[MIT License](LICENSE)
+### 3. Claude Code 或其他支持 `SKILL.md` 的代理
+将本目录放入相应工具的 skills 路径中即可自动识别。
 
 ---
 
-## English
+## 💬 高情商沟通艺术（精选预览）
 
-Demand Essence Loop is a project-agnostic skill for AI coding agents. It helps distinguish an underlying outcome from a proposed implementation, inspect the current source of truth, assess relevant system impact, choose the smallest complete solution, and preserve credible evolution paths without speculative infrastructure.
+| 业务沟通场景 | ❌ 严禁使用的沟通语气（生硬抵触） | ✅ 推荐使用的沟通语气（共情+引导本质） |
+| :--- | :--- | :--- |
+| **提了破坏架构的需求** | “这个做不了，系统架构不支持。” | “理解您想在现场快速处理换货的迫切心情（共情）。该诉求的实质是解决现场卡顿；若直接在终端改状态，会带来资金对账与越权风险（揭示客观代价）。我们推荐一种秒级扫码引导方案，既不卡现场，又保证账实相符……” |
+| **需求过大过杂** | “你这需求太庞大了，下个版本再说。” | “这个业务方向非常有价值！但如果一口气全部铺开，涉及的抽象过深容易延期。我们本次先做核心主链路 A，同时在底层把扩展槽留好，为后续平滑升级打好底座。” |
+| **发现表面需求是伪命题** | “你这个逻辑是错的，根本不需要。” | “通过代入现场具体操作工况，我们发现之所以觉得这里卡顿，根因在于首屏关键信息被长流水号挤占了。因此更精准省力的解法是在首屏突出核心品名与数量……” |
 
-Use it for ambiguous or cross-cutting change requests. Skip it for straightforward edits that contain no material design decision. See [`SKILL.md`](SKILL.md) for the full invocation behavior.
+---
+
+## 🌐 English Summary
+
+**Demand Essence Loop** is a battle-tested engineering skill for AI coding agents. It transforms proposed implementations into evidence-based architectural decisions.
+
+### Key Philosophy
+- **Uncover the Essence**: Separate what happened, the underlying goal, real-world physical constraints, and the user's proposed implementation (XY Problem).
+- **Physical Context Reconstruction**: Empathize with real-world operating environments (oily hands, small screens, glares, poor networks, queue pressure).
+- **Pragmatic MVP (Anti-Overengineering)**: Deliver the smallest complete solution for the present. Never build speculative generic rule engines prematurely.
+- **Architectural Reservation (Anti-Destruction)**: Keep future evolution open at the most expensive-to-reverse foundation layers (State machine enums, Schema `metadata` reservation slots, API Envelope wrapping, Decoupled concepts) with zero data backfills and zero breaking migrations.
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE)
