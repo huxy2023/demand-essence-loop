@@ -51,11 +51,11 @@ flowchart TD
 - 明确划分“本次做哪几步、坚决不做哪些延伸”。
 
 ### 5. 演进留白 (Evolution Reservation)
-- **底层防破坏性变更四大铁律**：
-  - **状态机枚举留白**：坚决不用单布尔值（如 `is_special`）封死生命周期，即使两个状态也用枚举；
-  - **Schema 扩展槽（Metadata 留白）**：核心表预留 `metadata JSON NULL`，用于过渡轻量半结构化属性，未来升级一等公民列时平滑无痛；
-  - **API 契约 Envelope 封装**：响应包装对象、入参单一对象，新增可选参数永不破坏老版本契约；
-  - **领域概念与权限解耦**：杜绝魔法值与硬编码绑定。
+- **底层高逆转成本防御四大指南**：
+  - **状态机枚举留白**：避免用单一布尔值封死生命周期，正交业务维度独立建模，明确分支终态；
+  - **Schema 扩展槽（Metadata 留白）**：核心表预留严格校验的 `metadata` 扩展槽承载探索期属性，清晰规划未来晋升一等公民列的迁移路径；
+  - **API 契约 Envelope 封装**：响应包装对象、入参单一对象，新增可选参数保持向后兼容；
+  - **权威数据源对齐**：使用不可变稳定业务标识符（Stable ID），严禁依赖可变显示文本。
 
 ---
 
@@ -82,8 +82,8 @@ demand-essence-loop/
 │   └── openai.yaml                          # Agent 接口元数据配置
 └── references/
     ├── essence-probing-guide.md             # 需求下潜、物理现场还原与 XY 问题诊断指南
-    ├── evolution-without-overengineering.md # 防过度设计与前瞻演进留白实战手册（四大铁律）
-    └── closed-loop-communication.md         # 闭环沟通规范、报告模板与高情商语言禁忌表
+    ├── evolution-without-overengineering.md # 防过度设计与前瞻演进留白实战手册（高逆转成本防御指南）
+    └── closed-loop-communication.md         # 闭环沟通规范、报告模板、验证证据与高情商语言禁忌表
 ```
 
 ---
@@ -127,7 +127,7 @@ ln -s "$(pwd)/demand-essence-loop" "$HOME/.gemini/config/skills/demand-essence-l
 - **Uncover the Essence**: Separate what happened, the underlying goal, real-world physical constraints, and the user's proposed implementation (XY Problem).
 - **Physical Context Reconstruction**: Empathize with real-world operating environments (oily hands, small screens, glares, poor networks, queue pressure).
 - **Pragmatic MVP (Anti-Overengineering)**: Deliver the smallest complete solution for the present. Never build speculative generic rule engines prematurely.
-- **Architectural Reservation (Anti-Destruction)**: Keep future evolution open at the most expensive-to-reverse foundation layers (State machine enums, Schema `metadata` reservation slots, API Envelope wrapping, Decoupled concepts) with zero data backfills and zero breaking migrations.
+- **Architectural Reservation (Anti-Destruction)**: Keep future evolution open at the most expensive-to-reverse foundation layers (State machine enums, Schema `metadata` reservation slots, API Envelope wrapping, Decoupled concepts from stable IDs) to minimize high-risk breaking migrations and downtime.
 
 ---
 
